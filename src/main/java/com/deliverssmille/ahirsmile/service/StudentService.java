@@ -1,5 +1,11 @@
 package com.deliverssmille.ahirsmile.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.deliverssmille.ahirsmile.AhirsmileApplication;
 import com.deliverssmille.ahirsmile.model.Quote;
 import com.deliverssmille.ahirsmile.model.Student;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping(value="/rest/student")
@@ -104,6 +111,50 @@ public class StudentService {
 	     }
 	     return student;
 	  }
+	  
+	  
+	  @RequestMapping(value="/anyquotes",method = RequestMethod.GET)
+	   public Quote getAnyQuoteUsingHttp(){
+		  String quote = null;
+		  Quote quote1 = null;
+		  try {
+
+				URL url = new URL("http://gturnquist-quoters.cfapps.io/api/random");
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setRequestMethod("GET");
+				conn.setRequestProperty("Accept", "application/json");
+
+				if (conn.getResponseCode() != 200) {
+					throw new RuntimeException("Failed : HTTP error code : "
+							+ conn.getResponseCode());
+				}
+
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+					(conn.getInputStream())));
+
+				
+				System.out.println("Output from Server .... \n");
+				while ((quote = br.readLine()) != null) {
+					System.out.println(quote);
+					ObjectMapper mapper = new ObjectMapper();
+					 quote1=mapper.readValue(quote, Quote.class);
+				}
+
+				conn.disconnect();
+
+			  } catch (MalformedURLException e) {
+
+				e.printStackTrace();
+
+			  } catch (IOException e) {
+
+				e.printStackTrace();
+
+			  }
+			return quote1;
+	   
+	     
+	   }
 	  
 	  
 	  
