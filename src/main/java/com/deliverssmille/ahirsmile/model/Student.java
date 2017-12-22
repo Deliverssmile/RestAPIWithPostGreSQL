@@ -1,27 +1,36 @@
 package com.deliverssmille.ahirsmile.model;
 
-import java.util.Date;
+import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 
 public class Student {
 
-	private long id;
+	private String _id;
 	private String name;
 	private String subject;
+	// private long count;
+	int lLimit = 1;
+
+	long rLimit = 100L;
 
 	public Student() {
 	}
 
-	public Student( String name, String subject) {
+	public Student(String id, String name, String subject) {
 		super();
-		this.id = (new Date()).getTime();
+		this._id = id;
 		this.name = name;
 		this.subject = subject;
+		// this.count=count;
 	}
 
-	public long getId() {
-		return id;
+	public String get_id() {
+		return _id;
 	}
 
+	/*
+	 * public long getId() { return id; }
+	 */
 	public String getName() {
 		return name;
 	}
@@ -30,9 +39,13 @@ public class Student {
 		return subject;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void set_id(String _id) {
+		this._id = _id;
 	}
+
+	/*
+	 * public void setId(long id) { this.id = id; }
+	 */
 
 	public void setName(String name) {
 		this.name = name;
@@ -44,7 +57,17 @@ public class Student {
 
 	@Override
 	public String toString() {
-		return "Student [id=" + id + ", name=" + name + ", subject=" + subject + "]";
+		return "Student [_id=" + _id + ", name=" + name + ", subject=" + subject + "]";
+	}
+
+	// add for converting java object to mongo object
+	public DBObject toDBObject() {
+
+		BasicDBObjectBuilder documentBuilder = BasicDBObjectBuilder.start("id", _id).append("name", name)
+				.append("subject", subject);
+
+		return documentBuilder.get();
+
 	}
 
 }
